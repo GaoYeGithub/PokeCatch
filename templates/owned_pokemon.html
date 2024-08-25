@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owned Pokémon</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+        .pokemon-card {
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .pokemon-card img {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="display-4">Owned Pokémon</h1>
+        <a href="/" class="btn btn-secondary mb-4">Back to Catcher</a>
+        <div class="row">
+            {% for pokemon in owned_pokemon %}
+            <div class="col-md-4">
+                <div class="pokemon-card text-center">
+                    <img src="{{ pokemon.image }}" alt="{{ pokemon.name }}">
+                    <h3>{{ pokemon.name }}</h3>
+                    <p><strong>Types:</strong> {{ pokemon.types }}</p>
+                    <p>{{ pokemon.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

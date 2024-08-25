@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Catcher</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            text-align: center;
+            padding-top: 50px;
+        }
+        #pokemon-container img {
+            width: 150px;
+            height: 150px;
+        }
+        .btn-pokemon {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            background-color: #FFCB05;
+            border-color: #3B4CCA;
+            color: #3B4CCA;
+        }
+        .btn-pokemon:hover {
+            background-color: #3B4CCA;
+            color: #FFCB05;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="display-4">Pokémon Catcher</h1>
+        <div id="pokemon-container">
+            <img id="pokemon-image" src="" alt="Pokémon">
+            <h3 id="pokemon-name"></h3>
+            <p id="pokemon-description"></p>
+            <p><strong>Types:</strong> <span id="pokemon-types"></span></p>
+        </div>
+        <button id="encounter-btn" class="btn btn-pokemon">Encounter Pokémon</button>
+        <button id="catch-btn" class="btn btn-pokemon" style="display: none;">Catch Pokémon</button>
+        <p id="message"></p>
+        <button id="pokedex-btn" class="btn btn-primary">View Pokédex</button>
+        <a href="/owned_pokemon"><button class="btn btn-secondary">View Owned Pokémon</button></a>
+        <h2>Pokédex</h2>
+        <ul id="pokedex-list" class="list-group"></ul>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#encounter-btn").click(function() {
+                $.get("/encounter", function(data) {
+                    $("#pokemon-image").attr("src", data.image);
+                    $("#pokemon-name").text(data.name);
+                    $("#pokemon-description").text(data.description);
+                    $("#pokemon-types").text(data.types);
+                    $("#catch-btn").show();
+                    $("#message").text("");
+                });
+            });
+
+            $("#catch-btn").click(function() {
+                $.post("/catch", function(data) {
+                    $("#message").text(data.message);
+                    if (data.success) {
+                        $("#catch-btn").hide();
+                        updatePokedex();
+                    }
+                });
+            });
+
+            $("#pokedex-btn").click(updatePokedex);
+
+            function updatePokedex() {
+                $.get("/pokedex", function(data) {
+                    $("#pokedex-list").empty();
+                    if (data.pokedex && data.pokedex.length > 0) {
+                        data.pokedex.forEach(function(pokemon) {
+                            $("#pokedex-list").append(
+                                `<li class="list-group-item">
+                                    <img src="${pokemon.image}" alt="${pokemon.name}" style="width: 50px; height: 50px;">
+                                    <strong>${pokemon.name}</strong> - ${pokemon.types}
+                                    <p><small>${pokemon.description}</small></p>
+                                </li>`
+                            );
+                        });
+                    } else {
+                        $("#pokedex-list").append("<li class='list-group-item'>No Pokémon caught yet.</li>");
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
